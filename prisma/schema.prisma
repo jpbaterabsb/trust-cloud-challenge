@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// OEM table
+model OEM {
+  id          Int       @id @default(autoincrement())
+  name        String
+  oemNumber   Int       @unique
+  url         String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  status      Boolean   @default(true)
+  catalogs    Catalog[]
+}
+
+// MasterCatalog table
+model MasterCatalog {
+  id              Int           @id @default(autoincrement())
+  name            String
+  description     String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  status          Boolean       @default(true)
+  masterProducts  MasterProduct[]
+  catalogs    Catalog[]
+}
+
+// Catalog table
+model Catalog {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  status      Boolean     @default(true)
+  OEM         OEM?        @relation(fields: [oemId], references: [id])
+  oemId       Int?
+  masterCatalog MasterCatalog @relation(fields: [masterCatalogId], references: [id])
+  masterCatalogId Int
+}
+
+// MasterProduct table
+model MasterProduct {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  logo        String?
+  picture     String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  status      Boolean   @default(true)
+  masterCatalogId Int
+  masterCatalog  MasterCatalog @relation(fields: [masterCatalogId], references: [id])
+  products Product[]
+}
+
+// Product table
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  logo        String?
+  picture     String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  status      Boolean     @default(true)
+  masterProductId Int
+  masterProduct   MasterProduct @relation(fields: [masterProductId], references: [id])
+}
+
