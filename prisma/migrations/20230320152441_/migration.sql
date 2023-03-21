@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "OEM" ALTER COLUMN "oemNumber" SET DATA TYPE TEXT;

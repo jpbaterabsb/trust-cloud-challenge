@@ -2,8 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider      = "prisma-client-js"
-    binaryTargets = ["native", "linux-musl"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
 }
 
 datasource db {
@@ -13,70 +13,73 @@ datasource db {
 
 // OEM table
 model OEM {
-  id          Int       @id @default(autoincrement())
-  name        String
-  oemNumber   Int       @unique
-  url         String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  status      Boolean   @default(true)
-  catalogs    Catalog[]
+  id        Int       @id
+  name      String
+  oemNumber String    @unique
+  url       String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  status    Boolean   @default(true)
+  catalogs  Catalog[]
 }
 
 // MasterCatalog table
 model MasterCatalog {
+  id             Int             @id @default(autoincrement())
+  name           String
+  description    String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  status         Boolean         @default(true)
+  masterProducts MasterProduct[]
+  catalogs       Catalog[]
+}
+
+// Catalog table
+model Catalog {
   id              Int           @id @default(autoincrement())
   name            String
   description     String
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   status          Boolean       @default(true)
-  masterProducts  MasterProduct[]
-  catalogs    Catalog[]
-}
-
-// Catalog table
-model Catalog {
-  id          Int         @id @default(autoincrement())
-  name        String
-  description String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  status      Boolean     @default(true)
-  OEM         OEM?        @relation(fields: [oemId], references: [id])
-  oemId       Int?
-  masterCatalog MasterCatalog @relation(fields: [masterCatalogId], references: [id])
+  OEM             OEM           @relation(fields: [oemId], references: [id])
+  oemId           Int
+  masterCatalog   MasterCatalog @relation(fields: [masterCatalogId], references: [id])
   masterCatalogId Int
+  products        Product[]
 }
 
 // MasterProduct table
 model MasterProduct {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String
-  price       Float
-  logo        String?
-  picture     String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  status      Boolean   @default(true)
+  id              Int           @id @default(autoincrement())
+  partNumber      String        @unique
+  name            String
+  description     String
+  price           Float
+  logo            String?
+  picture         String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  status          Boolean       @default(true)
   masterCatalogId Int
-  masterCatalog  MasterCatalog @relation(fields: [masterCatalogId], references: [id])
-  products Product[]
+  masterCatalog   MasterCatalog @relation(fields: [masterCatalogId], references: [id])
+  products        Product[]
 }
 
 // Product table
 model Product {
-  id          Int         @id @default(autoincrement())
-  name        String
-  description String
-  price       Float
-  logo        String?
-  picture     String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  status      Boolean     @default(true)
-  masterProductId Int
-  masterProduct   MasterProduct @relation(fields: [masterProductId], references: [id])
+  id                      Int            @id @default(autoincrement())
+  name                    String
+  description             String
+  price                   Float
+  logo                    String?
+  picture                 String?
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+  status                  Boolean        @default(true)
+  catalogId               Int
+  catalog                 Catalog?       @relation(fields: [catalogId], references: [id])
+  masterProductPartNumber String?
+  masterProduct           MasterProduct? @relation(fields: [masterProductPartNumber], references: [partNumber])
 }
-

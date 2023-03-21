@@ -14,8 +14,8 @@ import {
 import { Product } from '@prisma/client';
 import { validate } from 'class-validator';
 import { isNil, omit, omitBy } from 'lodash';
-import { UpdateCatalogProductDto } from './dto/update-catalog.dto';
 import { User } from '../auth/entities/user.dto';
+import { UpdateCatalogProductDto } from './dto/update-catalog.dto';
 
 @Injectable()
 export class CatalogService {

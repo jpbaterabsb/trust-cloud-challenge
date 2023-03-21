@@ -20,7 +20,13 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Catalog API')
-    .addBearerAuth()
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      in: 'header',
+      name: 'Authorization',
+    })
     .setDescription('Backend for Catalogs')
     .setVersion('1.0')
     .build();
