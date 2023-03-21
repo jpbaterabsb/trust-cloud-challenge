@@ -46,11 +46,9 @@ export class CatalogService {
     addCatalogProductDTO: AddCatalogProductDTO,
   ) {
     if (addCatalogProductDTO.masterProductPartNumber) {
-      const masterProduct = await this.prismaService.masterProduct.findFirst({
-        where: {
-          partNumber: addCatalogProductDTO.masterProductPartNumber,
-        },
-      });
+      const masterProduct = await this.getMasterProductByPartNumber(
+        addCatalogProductDTO.masterProductPartNumber,
+      );
 
       Assert.assertTrue(
         masterProduct,
@@ -88,7 +86,15 @@ export class CatalogService {
     return catalogProduct;
   }
 
-  private async validateProductWithoutMasterProductReference(
+  async getMasterProductByPartNumber(masterProductPartNumber: string) {
+    return await this.prismaService.masterProduct.findFirst({
+      where: {
+        partNumber: masterProductPartNumber,
+      },
+    });
+  }
+
+  async validateProductWithoutMasterProductReference(
     addCatalogProductDTO: AddCatalogProductDTO,
   ) {
     const addCatalogProductWithoutMasterProductDTO =
@@ -184,7 +190,7 @@ export class CatalogService {
     return;
   }
 
-  private async validateCatalogProductParameters(
+  async validateCatalogProductParameters(
     catalogId: number,
     userId: number,
     productId: number,
@@ -202,7 +208,7 @@ export class CatalogService {
     return dbProduct;
   }
 
-  private async validateCatalog(catalogId: number, userId: number) {
+  async validateCatalog(catalogId: number, userId: number) {
     const catalog = await this.findById(catalogId);
 
     Assert.assertTrue(
@@ -225,7 +231,7 @@ export class CatalogService {
     return catalog;
   }
 
-  private async upsertCatalogProduct(persistProduct: Product) {
+  async upsertCatalogProduct(persistProduct: Product) {
     const catalogProduct = await this.prismaService.product.upsert({
       where: { id: persistProduct.id || 0 },
       create: persistProduct,
