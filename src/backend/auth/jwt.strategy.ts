@@ -1,13 +1,14 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private prismaService: PrismaService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
+      ignoreExpiration: true,
       secretOrKey: process.env.SECRET,
     });
   }
@@ -16,6 +17,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    *  Get deserialized JWT data and it add data in req.user property.
    */
   async validate(payload: any) {
-    return { userId: payload.sub, username: payload.username };
+    if (payload.roles.includes('admin')) {
+      return { roles: payload.roles };
+    }
+
+    const oem = await this.prismaService.oEM.findFirst({
+      where: { id: payload.sub },
+    });
+
+    return { ...oem, roles: payload.roles };
   }
 }
