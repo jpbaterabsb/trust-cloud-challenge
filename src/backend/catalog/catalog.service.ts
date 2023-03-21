@@ -17,10 +17,26 @@ import { isNil, omit, omitBy } from 'lodash';
 import { User } from '../auth/entities/user.dto';
 import { UpdateCatalogProductDto } from './dto/update-catalog.dto';
 
+/**
+ * A service to manage catalog products.
+ */
 @Injectable()
 export class CatalogService {
+  /**
+   * Creates a new `CatalogService` instance.
+   * @param prismaService - A `PrismaService` instance.
+   */
   constructor(private prismaService: PrismaService) {}
 
+  /**
+   * Creates a catalog product.
+   * @param id - A number that represents the catalog ID.
+   * @param user - A `User` object that represents the authenticated user.
+   * @param addCatalogProductDTO - An `AddCatalogProductDTO` object that represents the catalog product to create.
+   * @returns A `Promise` that resolves to the created `Product` object.
+   * @throws `NotFoundException` if the catalog does not exist.
+   * @throws `UnauthorizedException` if the authenticated user is not the owner of the catalog.
+   */
   async createCatalogProduct(
     id: number,
     user: User,
@@ -42,6 +58,13 @@ export class CatalogService {
     return this.createOrUpdateCatalogProduct(addCatalogProductDTO);
   }
 
+  /**
+   * Creates or updates a catalog product.
+   * @param addCatalogProductDTO - An `AddCatalogProductDTO` object that represents the catalog product to create or update.
+   * @returns A `Promise` that resolves to the created or updated `Product` object.
+   * @throws `NotFoundException` if the master product does not exist.
+   * @throws `UnprocessableEntityException` if the catalog product validation fails.
+   */
   async createOrUpdateCatalogProduct(
     addCatalogProductDTO: AddCatalogProductDTO,
   ) {
@@ -86,6 +109,11 @@ export class CatalogService {
     return catalogProduct;
   }
 
+  /**
+   * Gets a master product by part number.
+   * @param masterProductPartNumber - A string that represents the master product part number.
+   * @returns A `Promise` that resolves to the `MasterProduct` object.
+   */
   async getMasterProductByPartNumber(masterProductPartNumber: string) {
     return await this.prismaService.masterProduct.findFirst({
       where: {
@@ -94,6 +122,11 @@ export class CatalogService {
     });
   }
 
+  /**
+   * Validates a product without a master product reference.
+   * @param addCatalogProductDTO - An `AddCatalogProductDTO` object that represents the catalog product to validate.
+   * @throws `UnprocessableEntityException` if the validation fails.
+   */
   async validateProductWithoutMasterProductReference(
     addCatalogProductDTO: AddCatalogProductDTO,
   ) {
@@ -119,6 +152,15 @@ export class CatalogService {
     );
   }
 
+  /**
+   * Updates a catalog product.
+   * @param product - An `UpdateCatalogProductDto` object that represents the catalog product to update.
+   * @param productId - A number that represents the product ID.
+   * @param catalogId - A number that represents the catalog ID.
+   * @param userId - A number that represents the user ID.
+   * @returns A `Promise` that resolves to the updated `Product` object.
+   * @throws `UnprocessableEntityException` if the catalog product validation fails.
+   */
   async updateCatalogProduct(
     product: UpdateCatalogProductDto,
     productId: number,
@@ -133,6 +175,14 @@ export class CatalogService {
     return this.createOrUpdateCatalogProduct(product as AddCatalogProductDTO);
   }
 
+  /**
+   * Gets products by catalog ID.
+   * @param catalogId - A number that represents the catalog ID.
+   * @param userId - A number that represents the user ID.
+   * @param page - A number that represents the page number.
+   * @param limit - A number that represents the number of items to return.
+   * @returns A `Promise` that resolves to an array of `Product` objects.
+   */
   async getProductsByCatalogId(
     catalogId: number,
     userId: number,
@@ -150,6 +200,13 @@ export class CatalogService {
     });
   }
 
+  /**
+   * Returns a product from a catalog by its ID and the catalog ID.
+   * @param productId The ID of the product to retrieve.
+   * @param catalogId The ID of the catalog containing the product.
+   * @param userId The ID of the user making the request.
+   * @returns The product with the specified ID and catalog ID.
+   */
   async getProductFromACatalog(
     productId: number,
     catalogId: number,
@@ -158,6 +215,12 @@ export class CatalogService {
     return this.validateCatalogProductParameters(catalogId, userId, productId);
   }
 
+  /**
+   * Returns the master catalog for the given catalog ID and user ID.
+   * @param catalogId The ID of the catalog to retrieve the master catalog for.
+   * @param userId The ID of the user making the request.
+   * @returns The master catalog for the specified catalog ID and user ID.
+   */
   async getMasterCatalog(catalogId: number, userId: number) {
     await this.validateCatalog(catalogId, userId);
     const catalog = await this.prismaService.catalog.findFirst({
@@ -175,6 +238,13 @@ export class CatalogService {
     return catalog.masterCatalog;
   }
 
+  /**
+   * Deletes a catalog product with the specified ID, catalog ID, and user ID.
+   * @param productId The ID of the product to delete.
+   * @param catalogId The ID of the catalog containing the product.
+   * @param userId The ID of the user making the request.
+   * @returns Nothing.
+   */
   async deleteCatalogProduct(
     productId: number,
     catalogId: number,
@@ -190,6 +260,13 @@ export class CatalogService {
     return;
   }
 
+  /**
+   * Validates the catalog ID, user ID, and product ID, and returns the corresponding product.
+   * @param catalogId The ID of the catalog containing the product.
+   * @param userId The ID of the user making the request.
+   * @param productId The ID of the product to retrieve.
+   * @returns The product with the specified ID and catalog ID.
+   */
   async validateCatalogProductParameters(
     catalogId: number,
     userId: number,
@@ -208,6 +285,12 @@ export class CatalogService {
     return dbProduct;
   }
 
+  /**
+   * Validates the catalog ID and user ID, and returns the corresponding catalog.
+   * @param catalogId The ID of the catalog to retrieve.
+   * @param userId The ID of the user making the request.
+   * @returns The catalog with the specified ID.
+   */
   async validateCatalog(catalogId: number, userId: number) {
     const catalog = await this.findById(catalogId);
 
@@ -222,6 +305,11 @@ export class CatalogService {
     return catalog;
   }
 
+  /**
+   * Finds a catalog by its ID.
+   * @param id The ID of the catalog to find.
+   * @returns The catalog with the specified ID.
+   */
   async findById(id: number) {
     const catalog = await this.prismaService.catalog.findFirst({
       where: {
@@ -231,6 +319,11 @@ export class CatalogService {
     return catalog;
   }
 
+  /**
+   * Upserts a catalog product by either creating a new one or updating an existing one.
+   * @param {Product} persistProduct - The product to be persisted in the database.
+   * @returns {Promise<Product>} - A promise that resolves to the upserted catalog product.
+   */
   async upsertCatalogProduct(persistProduct: Product) {
     const catalogProduct = await this.prismaService.product.upsert({
       where: { id: persistProduct.id || 0 },

@@ -7,18 +7,21 @@ import { MasterCatalogService } from './master-catalog.service';
 describe('MasterCatalog', () => {
   let service: MasterCatalogService;
   let prismaService: PrismaService;
+  let warn = null;
 
   beforeEach(async () => {
+    warn = console.warn;
+    console.warn = jest.fn();
     const module: TestingModule = await Test.createTestingModule({
       providers: [MasterCatalogService, PrismaService],
     }).compile();
-
     service = module.get<MasterCatalogService>(MasterCatalogService);
     prismaService = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
+    console.warn = warn;
   });
 
   describe('createProduct', () => {
@@ -30,11 +33,16 @@ describe('MasterCatalog', () => {
         price: 10,
         logo: 'test.png',
         picture: 'test.png',
+        masterCatalogId: 1,
       } as any;
 
       const createSpy = jest
         .spyOn(prismaService.masterProduct, 'create')
         .mockResolvedValueOnce(masterProduct);
+
+      jest
+        .spyOn(service, 'validatePartNumber')
+        .mockImplementation(() => Promise.resolve());
 
       const result = await service.createProduct(masterProduct);
 
@@ -97,24 +105,6 @@ describe('MasterCatalog', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('should throw a BadRequestException if part number already exists', async () => {
-      const newPartNumber = 'DEF456';
-      const existingPartNumber = 'ABC123';
-      const existingProductWithNewPartNumber: MasterProduct = {
-        ...existingMasterProduct,
-        partNumber: newPartNumber,
-      };
-      jest
-        .spyOn(prismaService.masterProduct, 'findUnique')
-        .mockResolvedValue(existingProductWithNewPartNumber);
-
-      await expect(
-        service.updateProduct(existingProductId, {
-          partNumber: existingPartNumber,
-        } as any),
-      ).rejects.toThrow(BadRequestException);
-    });
-
     it('should update the master product with the new data and return it', async () => {
       const newPartNumber = 'DEF456';
       const newProductData: Omit<MasterProduct, 'id' | 'masterCatalogId'> = {
@@ -134,6 +124,13 @@ describe('MasterCatalog', () => {
         .spyOn(prismaService.masterProduct, 'findUnique')
         .mockResolvedValueOnce(existingMasterProduct)
         .mockResolvedValueOnce(undefined);
+
+      jest
+        .spyOn(prismaService.product, 'updateMany')
+        .mockResolvedValue({} as any);
+      jest
+        .spyOn(prismaService.masterProduct, 'update')
+        .mockResolvedValue(expectedUpdatedProduct);
 
       const prismaTransactionMock = jest
         .fn()

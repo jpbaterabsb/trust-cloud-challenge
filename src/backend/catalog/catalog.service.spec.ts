@@ -16,14 +16,21 @@ import * as classValidator from 'class-validator';
 describe('CatalogService', () => {
   let catalogService: CatalogService;
   let prismaService: PrismaService;
+  let warn = null;
 
   beforeEach(async () => {
+    warn = console.warn;
+    console.warn = jest.fn();
     const moduleRef = await Test.createTestingModule({
       providers: [CatalogService, PrismaService],
     }).compile();
-
     catalogService = moduleRef.get<CatalogService>(CatalogService);
     prismaService = moduleRef.get<PrismaService>(PrismaService);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+    console.warn = warn;
   });
 
   describe('createCatalogProduct', () => {

@@ -4,14 +4,47 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { MasterProduct } from '@prisma/client';
+import { omit } from 'lodash';
 import { PrismaService } from 'src/prisma.service';
 import { Assert } from '../utils/assert';
 
+/**
+ * Service responsible for managing the master catalog and its products.
+ */
 @Injectable()
 export class MasterCatalogService {
+  /**
+   * Creates an instance of `MasterCatalogService`.
+   * @param prismaService - The Prisma service instance to use for database access.
+   */
   constructor(private prismaService: PrismaService) {}
 
-  async createProduct(masterProduct: MasterProduct) {
+  /**
+   * Creates a new MasterProduct in the Master Catalog
+   * @param masterProduct - The MasterProduct to create
+   * @throws `BadRequestException` if a MasterProduct with the same partNumber already exists
+   */
+  async createProduct(masterProductRequest: MasterProduct) {
+    const {
+      name,
+      description,
+      price,
+      logo,
+      partNumber,
+      picture,
+      masterCatalogId,
+    } = masterProductRequest;
+
+    const masterProduct = {
+      name,
+      description,
+      price,
+      logo,
+      partNumber,
+      picture,
+      masterCatalogId,
+    };
+
     await this.validatePartNumber(masterProduct.partNumber);
 
     masterProduct.masterCatalogId = 1;
@@ -20,7 +53,12 @@ export class MasterCatalogService {
     });
   }
 
-  private async validatePartNumber(partNumber: string) {
+  /**
+   * Validates that a MasterProduct with the given partNumber does not exist
+   * @param partNumber - The part number to validate
+   * @throws `BadRequestException` if a MasterProduct with the same partNumber already exists
+   */
+  async validatePartNumber(partNumber: string) {
     const dbMasterProduct = await this.prismaService.masterProduct.findUnique({
       where: {
         partNumber: partNumber,
@@ -33,6 +71,10 @@ export class MasterCatalogService {
     );
   }
 
+  /**
+   * Retrieves all MasterProducts in the Master Catalog
+   * @returns A list of MasterProducts
+   */
   async find() {
     const masterCatalog = await this.prismaService.masterCatalog.findFirst({
       include: {
@@ -42,7 +84,22 @@ export class MasterCatalogService {
     return masterCatalog.masterProducts;
   }
 
-  async updateProduct(id: number, masterProduct: MasterProduct) {
+  /**
+   * Updates a MasterProduct in the Master Catalog
+   * @param id - The id of the MasterProduct to update
+   * @param masterProduct - The MasterProduct fields to update
+   * @returns The updated MasterProduct
+   * @throws `NotFoundException` if the MasterProduct with the given id does not exist
+   */
+  async updateProduct(id: number, masterProductRequest: MasterProduct) {
+    const masterProduct = omit(masterProductRequest, [
+      'id',
+      'partNumber',
+      'masterCatalog',
+      'status',
+      'updatedAt',
+      'createdAt',
+    ]);
     const dbMasterProduct = await this.prismaService.masterProduct.findUnique({
       where: {
         id,
@@ -54,10 +111,6 @@ export class MasterCatalogService {
       () => new NotFoundException('master product not found'),
     );
 
-    if (dbMasterProduct.partNumber !== masterProduct.partNumber) {
-      await this.validatePartNumber(masterProduct.partNumber);
-    }
-
     return this.prismaService.$transaction(async (tx) => {
       const persistData = { ...dbMasterProduct, ...masterProduct };
       if (masterProduct.price > dbMasterProduct.price) {
@@ -66,7 +119,7 @@ export class MasterCatalogService {
             price: {
               lt: masterProduct.price,
             },
-            masterProductPartNumber: masterProduct.partNumber,
+            masterProductPartNumber: dbMasterProduct.partNumber,
           },
           data: {
             price: masterProduct.price,
@@ -85,6 +138,12 @@ export class MasterCatalogService {
     });
   }
 
+  /**
+   * Deletes a MasterProduct from the Master Catalog
+   * @param id - The id of the MasterProduct to delete
+   * @returns The deleted MasterProduct
+   * @throws `NotFoundException` if the MasterProduct with the given id does not exist
+   */
   async deleteProduct(id: number) {
     const dbMasterProduct = await this.prismaService.masterProduct.findUnique({
       where: {

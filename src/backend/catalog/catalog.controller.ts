@@ -22,6 +22,7 @@ import {
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
+  OmitType,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { Role } from '../auth/entities/roles';
@@ -45,7 +46,7 @@ export class CatalogController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   @ApiBody({
     description: 'Request body for creating a catalog product',
-    type: AddCatalogProductDTO,
+    type: OmitType(AddCatalogProductDTO, ['catalogId', 'id']),
   })
   @Post(':catalogId/products')
   @Roles(Role.OEM)
@@ -65,13 +66,13 @@ export class CatalogController {
     summary: 'Update a product in a catalog',
   })
   @ApiBody({
-    type: AddCatalogProductDTO,
+    type: OmitType(AddCatalogProductDTO, ['catalogId', 'id']),
     description: 'Updated product data',
   })
   @ApiResponse({
     status: 200,
     description: 'The updated product',
-    type: AddCatalogProductDTO,
+    type: OmitType(AddCatalogProductDTO, ['catalogId', 'id']),
   })
   @Put(':catalogId/products/:productId')
   @Roles(Role.OEM)

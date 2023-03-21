@@ -1,0 +1,410 @@
+{
+	"info": {
+		"_postman_id": "fd357428-a58d-4a61-aa17-31153b85877f",
+		"name": "Catalog Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1450134"
+	},
+	"item": [
+		{
+			"name": "Master Catalogs",
+			"item": [
+				{
+					"name": "Get Master Catalog Products",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6WyJhZG1pbiJdLCJpYXQiOjE2NzkyNjAxODUsImV4cCI6MTk5NDgzNjE4NX0.hFb85vJ2QnqQO8vtV6kZa6V9ANQ6PM8ofk4DkOJNGhE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/master-catalogs/products",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"master-catalogs",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a master catalog product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6WyJhZG1pbiJdLCJpYXQiOjE2NzkyNjAxODUsImV4cCI6MTk5NDgzNjE4NX0.hFb85vJ2QnqQO8vtV6kZa6V9ANQ6PM8ofk4DkOJNGhE"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"partNumber\": \"string\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"price\": 0,\n  \"logo\": \"string\",\n  \"picture\": \"string\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/master-catalogs/products",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"master-catalogs",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Master Catalog Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6WyJhZG1pbiJdLCJpYXQiOjE2NzkyNjAxODUsImV4cCI6MTk5NDgzNjE4NX0.hFb85vJ2QnqQO8vtV6kZa6V9ANQ6PM8ofk4DkOJNGhE"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 2,\n    \"partNumber\": \"A002\",\n    \"name\": \"Denim Jacket\",\n    \"description\": \"A versatile denim jacket that's perfect for layering\",\n    \"price\": 1000.99,\n    \"logo\": null,\n    \"picture\": \"https://example.com/denim-jacket.jpg\",\n    \"createdAt\": \"2023-03-21T17:49:18.369Z\",\n    \"updatedAt\": \"2023-03-21T17:49:18.369Z\",\n    \"status\": true,\n    \"masterCatalogId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{host}}/master-catalogs/products/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"master-catalogs",
+								"products",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Master Catalog Product",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6WyJhZG1pbiJdLCJpYXQiOjE2NzkyNjAxODUsImV4cCI6MTk5NDgzNjE4NX0.hFb85vJ2QnqQO8vtV6kZa6V9ANQ6PM8ofk4DkOJNGhE"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/master-catalogs/products/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"master-catalogs",
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Catalogs",
+			"item": [
+				{
+					"name": "Create a catalog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"masterProductPartNumber\": \"A005\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/catalogs/5/products",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"catalogs",
+								"5",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a catalog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Product Name3\",\n  \"description\": \"Product Description3\",\n  \"price\": 100.99,\n  \"logo\": \"https://example.com/logo.png\",\n  \"picture\": \"https://example.com/picture.png\",\n  \"masterProductPartNumber\": \"A002\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/catalogs/3/products/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"catalogs",
+								"3",
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a catalog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/catalogs/5/products/10",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"catalogs",
+								"5",
+								"products",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Catalog",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Product Name1\",\n  \"description\": \"Product Description1\",\n  \"price\": 9.99,\n  \"logo\": \"https://example.com/logo.png\",\n  \"picture\": \"https://example.com/picture.png\",\n  \"masterProductPartNumber\": \"A001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/catalogs/3/products",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"catalogs",
+								"3",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Product",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Product Name1\",\n  \"description\": \"Product Description1\",\n  \"price\": 9.99,\n  \"logo\": \"https://example.com/logo.png\",\n  \"picture\": \"https://example.com/picture.png\",\n  \"masterProductPartNumber\": \"A001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/catalogs/20/products/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"catalogs",
+								"20",
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Master Catalog",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Product Name1\",\n  \"description\": \"Product Description1\",\n  \"price\": 9.99,\n  \"logo\": \"https://example.com/logo.png\",\n  \"picture\": \"https://example.com/picture.png\",\n  \"masterProductPartNumber\": \"A001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/catalogs/3/master-catalogs",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"catalogs",
+								"3",
+								"master-catalogs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

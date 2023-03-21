@@ -18,23 +18,3 @@ services:
     ports:
       - "5432:5432"
     restart: unless-stopped
-    networks:
-      - catalog_net
-  api:
-    build:
-      dockerfile: Dockerfile
-      context: .
-    env_file:
-      - .env.docker
-    # Run a command against the development stage of the image
-    depends_on:
-      - database
-    command: ./startup.sh
-    ports:
-      - "3333:3333"
-    networks:
-      - catalog_net
-networks:
-  catalog_net:
-    driver: "bridge"
-    

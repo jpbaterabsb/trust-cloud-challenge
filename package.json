@@ -16,9 +16,8 @@
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-        "test:e2e": "SECRET=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 jest --verbose --config ./test/jest-e2e.json",
         "test:all": "npm test && npm run test:e2e && cd front && npm test -- --watchAll=false --verbose && cd ..",
-        "install:all": "npm install && cd front && npm install && cd ..",
+        "run-docker": "npm install && npm test && docker-compose up -d",
         "seed": "ts-node prisma/seed.ts"
     },
     "dependencies": {

@@ -20,12 +20,15 @@ import { validate } from 'class-validator';
 import { Role } from '../auth/entities/roles';
 import { Roles } from '../auth/roles.decorator';
 import { Assert } from '../utils/assert';
-import { CreateMasterCatalogProductDto } from './dto/create-master-catalog.dto';
+import {
+  CreateMasterCatalogProductDto,
+  UpdateMasterCatalogProductDto,
+} from './dto/create-master-catalog.dto';
 import { MasterCatalog } from './entities/master-catalog.entity';
 import { MasterCatalogService } from './master-catalog.service';
 
-@Controller('master-catalog')
-@ApiTags('Master Catalog')
+@Controller('master-catalogs')
+@ApiTags('Master Catalogs')
 @ApiBearerAuth()
 export class MasterCatalogController {
   constructor(private readonly masterCatalogService: MasterCatalogService) {}
@@ -49,9 +52,15 @@ export class MasterCatalogController {
     status: 200,
     description: 'The updated product',
   })
+  @ApiBody({
+    description:
+      'The request body should contain all required fields to update a new Master Catalog Product',
+    type: UpdateMasterCatalogProductDto,
+  })
+  @Roles(Role.ADMIN)
   async update(
     @Param('id') id: string,
-    @Body() updateMasterCatalogDto: CreateMasterCatalogProductDto,
+    @Body() updateMasterCatalogDto: UpdateMasterCatalogProductDto,
   ) {
     const validation = await validate(updateMasterCatalogDto);
     Assert.assertEmpty(
@@ -81,6 +90,7 @@ export class MasterCatalogController {
       'The request body should contain all required fields to create a new Master Catalog Product',
     type: CreateMasterCatalogProductDto,
   })
+  @Roles(Role.ADMIN)
   async create(@Body() createProductDTO: CreateMasterCatalogProductDto) {
     const validation = await validate(createProductDTO);
     Assert.assertEmpty(
@@ -100,6 +110,7 @@ export class MasterCatalogController {
   @ApiOperation({ summary: 'Delete a product from the master catalog by ID' })
   @ApiParam({ name: 'id', type: 'string', description: 'Product ID' })
   @ApiResponse({ status: 204, description: 'Product deleted' })
+  @Roles(Role.ADMIN)
   async delete(@Param('id') id: string) {
     return this.masterCatalogService.deleteProduct(+id);
   }
