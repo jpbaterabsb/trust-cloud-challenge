@@ -36,7 +36,7 @@ The goal of this a application is to provide a catalog service.
 
 - Docker
 - Docker Compose
-- Node >=16 (used version: 16.8.1)
+- Node >=16 (recommended version: 16.8.1)
 
 ## 🚀 Install
 
